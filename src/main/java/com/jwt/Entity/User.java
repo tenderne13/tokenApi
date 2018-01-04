@@ -4,6 +4,7 @@ public class User {
     private int id;
     private String username;
     private String password;
+    private String uuid;
 
     public int getId() {
         return id;
@@ -29,6 +30,14 @@ public class User {
         this.password = password;
     }
 
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
     public User(String username, String password) {
         this.username = username;
         this.password = password;
@@ -43,6 +52,7 @@ public class User {
                 "id=" + id +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
+                ", uuid='" + uuid + '\'' +
                 '}';
     }
 }
