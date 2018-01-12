@@ -12,13 +12,63 @@
 
  	
     
-	<!-- 默认扫描的包路径 -->
-    <context:component-scan base-package="com.jwt" >
+	<!-- 默认扫描的包路径
+    <context:component-scan base-package="com.activity" >
   		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
   		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service" />	    	
-	</context:component-scan>
+	</context:component-scan>-->
 
 
+
+
+    <!-- MyBatis配置 -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <!-- 自动扫描entity目录, 省掉Configuration.xml里的手工配置 -->
+        <property name="typeAliasesPackage" value="com.activity" />
+        <property name="configurationProperties">
+            <props>
+                <!-- 启用缓存配置 -->
+                <prop key="cacheEnabled">true</prop>
+            </props>
+        </property>
+        <!-- 显式指定Mapper文件位置 -->
+        <property name="mapperLocations" value="classpath:mybatis/**/*Mapper.xml" />
+    </bean>
+
+
+
+
+
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.activity"/>
+        <property name="annotationClass" value="com.activity.common.utils.mapper.MyBatisRepository"/>
+    </bean>
+
+    <!-- 自动扫描注解的bean
+    <context:component-scan base-package="com.jwt" />-->
+
+
+
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+
+    <!-- 加载配置文件 -->
+    <context:property-placeholder location="classpath:jdbc.properties" />
+
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+          destroy-method="close">
+        <property name="driverClassName" value="${jdbc.driver}" />
+        <property name="url" value="${jdbc.url}" />
+        <property name="username" value="${jdbc.username}" />
+        <property name="password" value="${jdbc.password}" />
+        <property name="defaultAutoCommit" value="false" />
+        <property name="validationQuery">
+            <value>select 1 from dual</value>
+        </property>
+    </bean>
 
 
 

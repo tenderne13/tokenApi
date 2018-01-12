@@ -3,31 +3,48 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:mvc="http://www.springframework.org/schema/mvc"
        xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/mvc
        http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd
        http://www.springframework.org/schema/context
-       http://www.springframework.org/schema/context/spring-context-4.1.xsd">
+       http://www.springframework.org/schema/context/spring-context-4.1.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd">
 
  	<!-- 启用spring mvc 注解 -->
     <context:annotation-config />
-    
+
+
+
+
     <!-- 添加注解驱动 -->  
     <mvc:annotation-driven>
     	<mvc:message-converters register-defaults="true">
     		<bean class="org.springframework.http.converter.StringHttpMessageConverter">
     			<constructor-arg value="UTF-8"></constructor-arg>
     		</bean>
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
 	  	</mvc:message-converters>
     </mvc:annotation-driven>
     
     
     
-	<!-- 默认扫描的包路径 -->
-    <context:component-scan base-package="com.jwt" >
+	<!-- 默认扫描的包路径-->
+    <context:component-scan base-package="com.activity" >
   		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
-  		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service" />	    	
-	</context:component-scan>  
+  		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service" />
+	</context:component-scan>
+
+    <!-- aop -->
+    <aop:aspectj-autoproxy proxy-target-class="true" />
+    <bean id="controllerAop" class="com.activity.common.aop.ControllerAop" />
+    <aop:config>
+        <aop:aspect id="myAop" ref="controllerAop">
+            <aop:pointcut id="target" expression="execution(public com.activity.common.beans.ResultBean *(..))" />
+            <aop:around method="handlerControllerMethod" pointcut-ref="target" />
+        </aop:aspect>
+    </aop:config>
+
     
     <!-- 静态资源由默认的servlet处理，其他由DispatcherServlet处理
     <mvc:default-servlet-handler/> -->
@@ -41,7 +58,7 @@
     <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">  
         <property name="prefix" value="/WEB-INF/views/" />  
         <property name="suffix" value=".jsp" />  
-    </bean>  
-    
-    
+    </bean>
+
+
 </beans>

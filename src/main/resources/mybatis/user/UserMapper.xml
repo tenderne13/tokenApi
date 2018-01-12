@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.activity.app.dao.user.UserMapper">
+
+  
+
+  	<sql id="Oracle_Dialect_Suffix">
+		<if test="page != null">
+      		<![CDATA[  limit #{page.beginRowNo}, #{page.pageSize} ]]>
+		</if>
+	</sql>
+	<sql id="orderby_id_desc">
+		ORDER BY id DESC
+	</sql>
+	
+    <select id="selectCount" resultType="INTEGER">
+        SELECT  count(0) from act_person
+    </select>
+
+</mapper>
